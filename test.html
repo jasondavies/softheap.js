@@ -1,0 +1,14 @@
+<body>
+  <script src="softheap.js"></script>
+  <script>
+var h = SoftHeap.makeHeap({key: 'test'});
+h = SoftHeap.insert(h, {key: 'aa'});
+h = SoftHeap.insert(h, {key: 'jason1'});
+h = SoftHeap.insert(h, {key: 'jason2'});
+debug();
+
+function debug() {
+  document.write(JSON.stringify(SoftHeap.extractMin(h)));
+}
+  </script>
+</body>
