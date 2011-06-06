@@ -160,7 +160,7 @@
   }
 
   function pickElem(l) {
-    return l.splice(Math.floor(Math.random() * l.length), 1)[0];
+    return l.splice(Math.floor(Math.random() * l.length))[0];
   }
 
   exports.makeHeap = makeHeap;
