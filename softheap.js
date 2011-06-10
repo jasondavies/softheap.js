@@ -133,21 +133,19 @@
         do {
           t2 = t1.next;
           if (t1.root.rank === t2.root.rank) {
-            if (t2.next === null || t1.root.rank !== t2.next.root.rank) {
-              var t2Root = t2.root.ckey;
-              t1.root = Node(t1.root, t2.root);
-              if (t1.root.ckey == t2Root) {
-                t1.suffixMin = t2.suffixMin;
-              } else {
-                lastChanged = t1;
-              }
-              t1.next = t2.next;
-              t2.root = null;
-              if (t2.next !== null) {
-                t2.next.prev = t1;
-              } else {
-                break;
-              }
+            var t2Root = t2.root.ckey;
+            t1.root = Node(t1.root, t2.root);
+            if (t1.root.ckey == t2Root) {
+              t1.suffixMin = t2.suffixMin;
+            } else {
+              lastChanged = t1;
+            }
+            t1.next = t2.next;
+            t2.root = null;
+            if (t2.next !== null) {
+              t2.next.prev = t1;
+            } else {
+              break;
             }
           } else if (t1.rank > 0) {
             break;
