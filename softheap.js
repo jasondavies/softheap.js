@@ -19,52 +19,41 @@
     return e;
   }
 
-  function clear(list) {
-    list.head = list.tail = null;
-    list.size = 0;
-  }
-
   function LinkedList(e) {
     if (arguments.length) {
-      var list = {
-        head: {e: e, next: null},
-        size: 1
-      };
-      list.tail = list.head;
-      return list;
+      this.head = this.tail = {e: e, next: null};
+      this.size = 1;
+    } else {
+      this.head = this.tail = null;
+      this.size = 0;
     }
-    return {
-      head: null,
-      tail: null,
-      size: 0
-    };
-  };
+  }
+
+  LinkedList.prototype.clear = function() {
+    this.head = this.tail = null;
+    this.size = 0;
+  }
 
   function Heap(compare) {
     compare = compare || function(a, b) { return a - b; };
 
     function Node(left, right) {
       if (arguments.length === 1) { // e = left
-        return {
-          ckey: left,
-          rank: 0,
-          left: null,
-          right: null,
-          list: LinkedList(left),
-          size: 1
-        };
+        this.ckey = left;
+        this.rank = 0;
+        this.left = this.right = null;
+        this.list = new LinkedList(left);
+        this.size = 1;
+      } else {
+        this.ckey = null;
+        this.rank = left.rank + 1;
+        this.left = left;
+        this.right = right;
+        this.list = new LinkedList();
+        this.size = this.rank <= r ? 1 : (3 * left.size + 1) / 2;
+        sift(this);
       }
-      var n = {
-        ckey: null,
-        rank: left.rank + 1,
-        left: left,
-        right: right,
-        list: LinkedList()
-      };
-      n.size = n.rank <= r ? 1 : (3 * left.size + 1) / 2;
-      sift(n);
-      return n;
-    };
+    }
 
     function sift(n) {
       var list = n.list;
@@ -84,7 +73,7 @@
 
         n.ckey = left.ckey;
         if (left.left !== null || left.right !== null) {
-          clear(left.list);
+          left.list.clear();
           sift(left);
         } else {
           n.left = n.right;
@@ -94,14 +83,10 @@
     }
 
     function Tree(e) {
-      var t = {
-        root: Node(e),
-        next: null,
-        prev: null
-      };
-      t.suffixMin = t;
-      return t;
-    };
+      this.root = new Node(e);
+      this.next = this.prev = null;
+      this.suffixMin = this;
+    }
 
     function updateSuffixMin(t) {
       return t.suffixMin = (t.next !== null
@@ -119,14 +104,14 @@
       rank: 0,
       size: 0
     };
-    
+ 
     heap.insert = function(e) {
       if (this.first === null) {
-        this.first = Tree(e);
+        this.first = new Tree(e);
         this.size = 1;
       } else {
         var t2 = this.first;
-        var t1 = this.first = Tree(e);
+        var t1 = this.first = new Tree(e);
         t1.next = t2;
         t2.prev = t1;
         var lastChanged = t1;
@@ -134,7 +119,7 @@
           t2 = t1.next;
           if (t1.root.rank === t2.root.rank) {
             var t2Root = t2.root.ckey;
-            t1.root = Node(t1.root, t2.root);
+            t1.root = new Node(t1.root, t2.root);
             if (t1.root.ckey == t2Root) {
               t1.suffixMin = t2.suffixMin;
             } else {
@@ -199,7 +184,7 @@
     };
 
     return heap;
-  };
+  }
 
   exports.SoftHeap = Heap;
 
