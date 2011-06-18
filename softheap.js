@@ -9,16 +9,6 @@
   var EPSILON = 1 / 3,
       r = Math.ceil(Math.log(1 / EPSILON) / Math.LN2) + 5;
 
-  function pick(list) {
-    // Picks an arbitrary element and removes from the list.
-    var node = list.head,
-        e = node.e;
-    list.head = node.next;
-    list.size--;
-    if (list.head === null) list.tail = null;
-    return e;
-  }
-
   function LinkedListNode(e) {
     this.e = e;
     this.next = null;
@@ -38,6 +28,16 @@
     this.head = this.tail = null;
     this.size = 0;
   }
+
+  LinkedList.prototype.pick = function() {
+    // Picks an arbitrary element and removes from the list.
+    var node = this.head,
+        e = node.e;
+    this.head = node.next;
+    this.size--;
+    if (this.head === null) this.tail = null;
+    return e;
+  };
 
   function Heap(compare) {
     compare = compare || function(a, b) { return a - b; };
@@ -94,16 +94,16 @@
       this.suffixMin = this;
     }
 
-    function updateSuffixMin(t) {
-      return t.suffixMin = (t.next !== null
-        ? compare(t.root.ckey, getSuffixMin(t.next).root.ckey) < 0
-          ? t : t.next.suffixMin
-        : t);
-    }
+    Tree.prototype.updateSuffixMin = function() {
+      return this.suffixMin = (this.next !== null
+        ? compare(this.root.ckey, this.next.getSuffixMin().root.ckey) < 0
+          ? this : this.next.suffixMin
+        : this);
+    };
 
-    function getSuffixMin(t) {
-      return t.suffixMin.root === null ? updateSuffixMin(t) : t.suffixMin;
-    }
+    Tree.prototype.getSuffixMin = function() {
+      return this.suffixMin.root === null ? this.updateSuffixMin() : this.suffixMin;
+    };
 
     var heap = {
       first: null,
@@ -166,7 +166,7 @@
 
     heap.updateSuffixMin = function(t) {
       for (; t !== null; t = t.prev) {
-        updateSuffixMin(t);
+        t.updateSuffixMin();
       }
     };
 
@@ -174,9 +174,9 @@
       if (this.first === null) {
         throw {"error": "empty!"};
       }
-      var t = getSuffixMin(this.first),
+      var t = this.first.getSuffixMin(),
           x = t.root,
-          e = pick(x.list);
+          e = x.list.pick();
       if (x.list.size * 2 <= x.size) {
         if (x.left !== null || x.right !== null) {
           x.sift();
