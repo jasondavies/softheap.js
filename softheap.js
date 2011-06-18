@@ -19,9 +19,14 @@
     return e;
   }
 
+  function LinkedListNode(e) {
+    this.e = e;
+    this.next = null;
+  }
+
   function LinkedList(e) {
-    if (arguments.length) {
-      this.head = this.tail = {e: e, next: null};
+    if (e !== undefined) {
+      this.head = this.tail = new LinkedListNode(e);
       this.size = 1;
     } else {
       this.head = this.tail = null;
@@ -38,7 +43,7 @@
     compare = compare || function(a, b) { return a - b; };
 
     function Node(left, right) {
-      if (arguments.length === 1) { // e = left
+      if (right === undefined) { // e = left
         this.ckey = left;
         this.rank = 0;
         this.left = this.right = null;
@@ -51,11 +56,12 @@
         this.right = right;
         this.list = new LinkedList();
         this.size = this.rank <= r ? 1 : (3 * left.size + 1) / 2;
-        sift(this);
+        this.sift();
       }
     }
 
-    function sift(n) {
+    Node.prototype.sift = function() {
+      var n = this;
       var list = n.list;
       while (list.size < n.size && (n.left !== null || n.right !== null)) {
         var left = n.left,
@@ -74,13 +80,13 @@
         n.ckey = left.ckey;
         if (left.left !== null || left.right !== null) {
           left.list.clear();
-          sift(left);
+          left.sift();
         } else {
           n.left = n.right;
           n.right = null;
         }
       }
-    }
+    };
 
     function Tree(e) {
       this.root = new Node(e);
@@ -173,7 +179,7 @@
           e = pick(x.list);
       if (x.list.size * 2 <= x.size) {
         if (x.left !== null || x.right !== null) {
-          sift(x);
+          x.sift();
           this.updateSuffixMin(t);
         } else if (x.list.head === null) {
           this.removeTree(t);
