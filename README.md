@@ -20,6 +20,6 @@ their keys "corrupted".  The purpose of these corruptions is to lower the
 information entropy of the data, enabling the data structure to break through
 information-theoretic barriers regarding heaps.
 
-[1]: http://www.siam.org/proceedings/soda/2009/SODA09_053_kaplanh.pdf
+[1]: https://doi.org/10.1137/1.9781611973068.53
 [2]: https://github.com/lowasser/SoftSelect
 [3]: http://en.wikipedia.org/wiki/Soft_heap

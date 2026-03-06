@@ -8,11 +8,11 @@
   "homepage": "https://github.com/jasondavies/softheap.js",
   "author": {
     "name": "Jason Davies",
-    "url": "http://www.jasondavies.com/"
+    "url": "https://www.jasondavies.com/"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/jasondavies/softheap.js.git"
+    "url": "git+https://github.com/jasondavies/softheap.js.git"
   },
   "main": "softheap.js"
 }
