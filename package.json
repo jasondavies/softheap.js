@@ -1,11 +1,19 @@
 {
   "name": "softheap",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Soft heap in JavaScript.",
   "keywords": [
-    "soft heap"
+    "soft heap",
+    "heap",
+    "priority queue",
+    "data structure",
+    "algorithm"
   ],
+  "license": "BSD-3-Clause",
   "homepage": "https://github.com/jasondavies/softheap.js",
+  "bugs": {
+    "url": "https://github.com/jasondavies/softheap.js/issues"
+  },
   "author": {
     "name": "Jason Davies",
     "url": "https://www.jasondavies.com/"
@@ -14,5 +22,15 @@
     "type": "git",
     "url": "git+https://github.com/jasondavies/softheap.js.git"
   },
-  "main": "softheap.js"
+  "type": "module",
+  "files": [
+    "softheap.js"
+  ],
+  "scripts": {
+    "benchmark": "node benchmark.js",
+    "prepublishOnly": "npm test",
+    "test": "node --test softheap.test.js"
+  },
+  "main": "./softheap.js",
+  "exports": "./softheap.js"
 }

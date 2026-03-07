@@ -1,4 +1,4 @@
-var SoftHeap = typeof window === "undefined" ? require("./softheap").SoftHeap : SoftHeap;
+import SoftHeap from "./softheap.js";
 
 var MAX = 1000000;
 
