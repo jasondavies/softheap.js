@@ -56,7 +56,7 @@ function SoftHeap(compare) {
       this.left = left;
       this.right = right;
       this.list = new LinkedList();
-      this.size = this.rank <= r ? 1 : (3 * left.size + 1) / 2;
+      this.size = this.rank <= r ? 1 : Math.ceil(3 * left.size / 2);
       this.sift();
     }
   }
