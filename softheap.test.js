@@ -29,7 +29,7 @@ test("insert consolidates roots until ranks differ", function() {
   assert.ok(heap.rank > 0);
 });
 
-test("extractMin returns the inserted multiset", function() {
+test("small heaps peek and extract values in ascending order", function() {
   var values = [5, 1, 3, 2, 4, 1, 0, 9, 7, 6];
   var heap = new SoftHeap();
 
@@ -37,13 +37,14 @@ test("extractMin returns the inserted multiset", function() {
     heap.insert(value);
   });
 
+  // This heap is below the corruption threshold, so its order must be exact.
+  values.sort(function(a, b) { return a - b; });
   var extracted = [];
   while (heap.size) {
+    assert.equal(heap.findMin(), values[extracted.length]);
     extracted.push(heap.extractMin());
   }
 
-  extracted.sort(function(a, b) { return a - b; });
-  values.sort(function(a, b) { return a - b; });
   assert.deepEqual(extracted, values);
 });
 
@@ -66,6 +67,7 @@ test("findMin peeks the next extracted value without removing it", function() {
   var before = heap.size;
   var peeked = heap.findMin();
 
+  assert.equal(peeked, 1);
   assert.equal(heap.size, before);
   assert.equal(heap.findMin(), peeked);
   assert.equal(heap.extractMin(), peeked);
@@ -112,7 +114,7 @@ for (var scenario of [
 }
 
 function testLargeMixedHeap(scenario) {
-  test("large mixed heap preserves values and bounds corruption: " + scenario.name, function() {
+  test("large mixed heap selects minima, preserves values and bounds corruption: " + scenario.name, function() {
     var heap = new SoftHeap(scenario.compare);
     var live = new Set();
     var inserted = 0;
@@ -133,7 +135,20 @@ function testLargeMixedHeap(scenario) {
 
     function extract() {
       var before = heap.size;
+      // Scan current root keys independently of the cached suffix minima.
+      // Original payload keys may be smaller because of corruption.
+      var minimumKey = heap.first.root.ckey;
+      for (var tree = heap.first; tree !== null; tree = tree.next) {
+        if (scenario.order(tree.root.ckey, minimumKey) < 0) minimumKey = tree.root.ckey;
+      }
+      var candidates = new Set();
+      for (var tree = heap.first; tree !== null; tree = tree.next) {
+        if (scenario.order(tree.root.ckey, minimumKey) === 0) {
+          candidates.add(tree.root.list.head.e);
+        }
+      }
       var peeked = heap.findMin();
+      assert.ok(candidates.has(peeked), "peek must come from a root with the minimum current key");
       assert.equal(heap.findMin(), peeked);
       assert.equal(heap.size, before);
       assert.equal(heap.extractMin(), peeked);
